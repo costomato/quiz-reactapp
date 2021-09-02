@@ -1,22 +1,29 @@
 import React from "react";
 import OptionBtn from "./OptionBtn";
+import CorrectAnswer from "./CorrectAnswer";
 
-const correctAnswers = []
+let correctAnswers = 0
+const attempted = []
 function answerClick(questionId, optionId, clickedAnswer, correct, totalOptions, quizSize) {
-    for (let i = 0; i < totalOptions; i++) {
+    /*for (let i = 0; i < totalOptions; i++) {
         const btnId = questionId.toString().concat(i.toString());
         document.getElementById(btnId).style.background = '#4f75f1'
+    }*/
+    if (!attempted.includes(questionId)) {
+        if (clickedAnswer === correct) {
+            /*if (!correctAnswers.includes(questionId))
+                correctAnswers.push(questionId)*/
+            correctAnswers++
+            document.getElementById(optionId).style.background = '#04d46f'
+            document.getElementById('score').innerHTML = `Score: ${correctAnswers}/${quizSize}`
+        } else {
+            /*if (correctAnswers.includes(questionId))
+                correctAnswers.splice(correctAnswers.indexOf(questionId), 1)*/
+            document.getElementById(optionId).style.background = '#f11b43'
+            document.getElementById(`ans${questionId}`).style.display = 'initial'
+        }
+        attempted.push(questionId)
     }
-    if (clickedAnswer === correct) {
-        if (!correctAnswers.includes(questionId))
-            correctAnswers.push(questionId)
-        document.getElementById(optionId).style.background = '#04d46f'
-    } else {
-        if (correctAnswers.includes(questionId))
-            correctAnswers.splice(correctAnswers.indexOf(questionId), 1)
-        document.getElementById(optionId).style.background = '#f11b43'
-    }
-    document.getElementById('score').innerHTML = `Score: ${correctAnswers.length}/${quizSize}`
 }
 
 const questionStyle = {
@@ -44,6 +51,7 @@ export default function QuizInterface(props) {
         <div>
             <h5 style={questionStyle}>Question: {props.question}</h5>
             {getOptionButtons(props)}
+            <CorrectAnswer answerId={`ans${props.id}`} correctAnswer={props.correct}/>
         </div>
     )
 }
